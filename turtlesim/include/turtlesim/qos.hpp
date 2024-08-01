@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Willow Garage, Inc.
+// Copyright (c) 2024, Open Source Robotics Foundation, Inc.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -26,40 +26,18 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <QApplication>
+#ifndef TURTLESIM__QOS_HPP_
+#define TURTLESIM__QOS_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "turtlesim/turtle_frame.hpp"
-
-class TurtleApp : public QApplication
+namespace turtlesim
 {
-public:
-  rclcpp::Node::SharedPtr nh_;
-
-  explicit TurtleApp(int & argc, char ** argv)
-  : QApplication(argc, argv)
-  {
-    rclcpp::init(argc, argv);
-    nh_ = rclcpp::Node::make_shared("turtlesim");
-  }
-
-  ~TurtleApp()
-  {
-    rclcpp::shutdown();
-  }
-
-  int exec()
-  {
-    turtlesim::TurtleFrame frame(nh_);
-    frame.show();
-
-    return QApplication::exec();
-  }
-};
-
-int main(int argc, char ** argv)
+// Return the QoS used for all publishers/subscriptions.
+inline rclcpp::QoS topic_qos()
 {
-  TurtleApp app(argc, argv);
-  return app.exec();
+  return rclcpp::QoS(rclcpp::KeepLast(7)).reliable();
 }
+}  // namespace turtlesim
+
+#endif  // TURTLESIM__QOS_HPP_
